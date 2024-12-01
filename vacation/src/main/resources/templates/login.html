@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vacation Planner Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and basic styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body styling */
+    body {
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;  /* Full height of viewport */
+      background-image: url('https://images.unsplash.com/photo-1504598318550-17eba1008a68?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Background image */
+      background-size: cover;  /* Make sure the image covers the screen */
+      background-position: center;  /* Center the image */
+      background-repeat: no-repeat;  /* Prevent repeating the image */
+      background-attachment: fixed;  /* Fixed background when scrolling */
+      color: white;  /* Default text color */
+    }
+
+    /* Login container styling */
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+      padding: 40px 50px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;  /* Maximum width */
+      text-align: center;
+      z-index: 1;  /* Ensure it is above the background */
+      margin: 20px;
+    }
+
+    .login-container h1 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .login-container p {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 30px;
+    }
+
+    /* Google sign-in button styling */
+    .google-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: darkgray; /* Google blue */
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+
+    .google-btn img {
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+      object-fit: contain;  /* Ensures logo fits properly */
+    }
+
+    /* Footer section */
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #777;
+    }
+
+    .footer a {
+      color: #4285F4;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-container">
+  <h1>Welcome to Vacation Planner</h1>
+  <p>Sign in with Google to start planning your next vacation!</p>
+
+  <button class="google-btn" onclick="window.location.href = '/oauth2/authorization/google';">
+    <img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt="Google logo">
+    Sign in with Google
+  </button>
+
+  <div class="footer">
+    <p>By signing in, you agree to our <a href="#">Privacy Policy</a>.</p>
+  </div>
+</div>
+
+</body>
+</html>
