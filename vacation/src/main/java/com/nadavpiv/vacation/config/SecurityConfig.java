@@ -1,5 +1,8 @@
 package com.nadavpiv.vacation.config;
 
+import com.nadavpiv.vacation.oauth.CustomAuthenticationEntryPoint;
+import com.nadavpiv.vacation.oauth.OAuth2LoginFailureHandler;
+import com.nadavpiv.vacation.oauth.OAuth2LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +18,8 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Autowired
+    private OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     @Autowired
     private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
@@ -43,11 +48,12 @@ public class SecurityConfig {
                 .anyRequest().authenticated() // All other endpoints require authentication
                 .and()
                 .oauth2Login()
-                .loginPage("/login") // Custom login page (can be omitted for default OAuth login page)
-                .successHandler(oAuth2LoginSuccessHandler) // Custom OAuth login success handler
+                    .failureHandler(oAuth2LoginFailureHandler)  // Custom failure handler
+                    .successHandler(oAuth2LoginSuccessHandler)  // Custom success handler
+                    .loginPage("/login")  // Optional custom login page
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(customAuthenticationEntryPoint); // Use custom entry point for expired token
+                    .authenticationEntryPoint(customAuthenticationEntryPoint); // Use custom entry point for expired token
 
         return http.build();
     }

@@ -1,4 +1,4 @@
-package com.nadavpiv.vacation.repo;
+package com.nadavpiv.vacation.service;
 
 import com.nadavpiv.vacation.model.Vacation;
 import com.sendgrid.*;
@@ -14,9 +14,11 @@ public class EmailService {
 
     @Value("${sendgrid.api.key}")
     private String sendGridApiKey;
+    @Value("${sendgrid.valid.email}")
+    private String valid_email;
 
     public String sendEmail(String toEmail, String subject, Vacation vacation) {
-        Email from = new Email("vacationplanner@walla.co.il"); // Replace with your verified email
+        Email from = new Email(valid_email); // Replace with your verified email
         Email to = new Email(toEmail);
 
         // Create the HTML content with headers, bold text, and properly formatted restaurant details

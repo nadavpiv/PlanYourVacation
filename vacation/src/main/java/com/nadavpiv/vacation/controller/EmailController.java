@@ -1,8 +1,8 @@
 package com.nadavpiv.vacation.controller;
 
 import com.nadavpiv.vacation.model.Vacation;
-import com.nadavpiv.vacation.repo.AuthenticationEmailService;
-import com.nadavpiv.vacation.repo.EmailService;
+import com.nadavpiv.vacation.oauth.AuthenticationEmailService;
+import com.nadavpiv.vacation.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +33,7 @@ public class EmailController {
         try {
             // Send email to the user
             emailService.sendEmail(userEmail, "Vacation Details", vacationDetails);
+            logger.info("Email sent successfully to " + userEmail);
             return ResponseEntity.ok("Email sent successfully to " + userEmail);
         } catch (Exception e) {
             logger.error("Failed to send email to " + userEmail, e);

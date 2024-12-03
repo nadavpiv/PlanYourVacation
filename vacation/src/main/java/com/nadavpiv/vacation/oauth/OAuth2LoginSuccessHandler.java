@@ -1,4 +1,4 @@
-package com.nadavpiv.vacation.config;
+package com.nadavpiv.vacation.oauth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

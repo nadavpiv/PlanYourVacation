@@ -1,6 +1,7 @@
-package com.nadavpiv.vacation.repo;
+package com.nadavpiv.vacation.service;
 
 import com.nadavpiv.vacation.model.Vacation;
+import com.nadavpiv.vacation.repo.VacationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;

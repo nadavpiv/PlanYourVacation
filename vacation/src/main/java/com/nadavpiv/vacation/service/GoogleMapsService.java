@@ -1,4 +1,4 @@
-package com.nadavpiv.vacation.repo;
+package com.nadavpiv.vacation.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,9 +14,10 @@ import java.util.List;
 public class GoogleMapsService {
     @Value("${google.maps.api.key}")
     private String apiKey;
-
-    private final String PLACES_API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-    private final String PHOTOS_API_URL = "https://maps.googleapis.com/maps/api/place/photo";
+    @Value("${google.places.api.url}")
+    private String PLACES_API_URL;
+    @Value("${google.photos.api.url}")
+    private String PHOTOS_API_URL;
     private final Integer MAX_PHOTOS = 3;
 
     private final RestTemplate restTemplate = new RestTemplate();

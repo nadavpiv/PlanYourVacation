@@ -1,4 +1,4 @@
-package com.nadavpiv.vacation.repo;
+package com.nadavpiv.vacation.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,61 +24,73 @@ public class ChatGPTService {
 
     @Value("${openai.api.key}")
     private String apiKey;
+    @Value("${openai.url}")
+    private String apiUrl;
     @Autowired
     private GoogleMapsService googleMapsService;
-
     @Autowired
     private ObjectMapper objectMapper;
-
-    private final String apiUrl = "https://api.openai.com/v1/chat/completions";
 
     public Vacation getVacationOptions(VacationRequest request) {
         // If the user don't ask for specific city we replace it to "Surprise me"
         if (request.getCity().equals(""))
             request.setCity("Surprise me");
 
+        String requestBody;
         try {
             // Build the user prompt from the request object
             String userPrompt = ChatGPTPromptBuilder.buildVacationPrompt(request);
-            // Create the request body for the chat model
-            String requestBody = buildChatGPTRequestBody(userPrompt);
+            requestBody = buildChatGPTRequestBody(userPrompt);
+        } catch (Exception e) {
+            logger.error("Error during building the prompt or the body request", e);
+            return new Vacation();
+        }
 
-            // Set up headers with the authorization token
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + apiKey);
-            headers.set("Content-Type", "application/json");
 
+        // Set up headers with the authorization token
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + apiKey);
+        headers.set("Content-Type", "application/json");
+
+        ResponseEntity<String> response;
+        try {
             // Create HTTP entity, Initialize RestTemplate and Send the post request
             HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class);
-
-            // Try to parse the response and extract vacation details
-            String content = null;
-            Vacation vacation = new Vacation();  // Default empty vacation object
-
-            try {
-                content = extractContent(response.getBody());
-                vacation = parseVacations(content);
-
-                // Get the photos from Google API for each attraction
-                for (Vacation.DayOption dayOption : vacation.getDays()) {
-                    List<Vacation.Attraction> attractions = dayOption.getAttractions();
-                    List<Vacation.Attraction> enrichedAttractions = enrichAttractionsWithPhotos(attractions);
-                    dayOption.setAttractions(enrichedAttractions);
-                }
-            } catch (Exception e) {
-                logger.error("Error during Chat GPT response, we cant build vacation", e);
-                // Returning an empty vacation object in case of failure to parse content
-                vacation = new Vacation();  // Ensure empty vacation is returned
-            }
-
-            return vacation;
-
-        } catch (Exception e) {
-            logger.error("Error during vacation request processing", e);
-            throw new RuntimeException("Failed to get vacation options from ChatGPT API", e);
+            response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class);
         }
+        catch (Exception e) {
+            logger.error("Error Create HTTP entity, or send the post request", e);
+            return new Vacation();
+        }
+
+        // Try to parse the response and extract vacation details
+        String content = null;
+        Vacation vacation = new Vacation();  // Default empty vacation object
+        try {
+            content = extractContent(response.getBody());
+            vacation = parseVacations(content);
+        }
+        catch (Exception e) {
+            logger.error("Error during Chat GPT response, we cant build vacation", e);
+            vacation = new Vacation();  // Ensure empty vacation is returned
+        }
+
+        try {
+            // Get the photos from Google API for each attraction
+            for (Vacation.DayOption dayOption : vacation.getDays()) {
+                List<Vacation.Attraction> attractions = dayOption.getAttractions();
+                List<Vacation.Attraction> enrichedAttractions = enrichAttractionsWithPhotos(attractions);
+                dayOption.setAttractions(enrichedAttractions);
+            }
+        }
+        catch (Exception e){
+            logger.error("Error during get the photos from google api", e);
+            vacation = new Vacation();  // Ensure empty vacation is returned
+        }
+
+        logger.info("Success in getting a vacation from Chat GPT");
+        return vacation; // all the process success
     }
     private String buildChatGPTRequestBody(String userPrompt) {
         return String.format(
