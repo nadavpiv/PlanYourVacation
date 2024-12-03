@@ -1,7 +1,7 @@
 package com.nadavpiv.vacation.controller;
 
 import com.nadavpiv.vacation.model.Vacation;
-import com.nadavpiv.vacation.repo.AuthenticationService;
+import com.nadavpiv.vacation.repo.AuthenticationEmailService;
 import com.nadavpiv.vacation.repo.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationEmailService authenticationEmailService;
     private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
 
     @PostMapping("/sendVacationDetails")
     public ResponseEntity<String> sendVacationDetails(@RequestBody Vacation vacationDetails, Authentication authentication) {
         // Fetch user email from authentication object
-        String userEmail = authenticationService.extractEmailFromAuthentication(authentication);
+        String userEmail = authenticationEmailService.extractEmailFromAuthentication(authentication);
         if (userEmail == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User email not found or user not authenticated.");
         }
@@ -40,4 +40,3 @@ public class EmailController {
         }
     }
 }
-

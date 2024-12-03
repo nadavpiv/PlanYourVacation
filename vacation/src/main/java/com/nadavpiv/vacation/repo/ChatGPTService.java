@@ -53,18 +53,25 @@ public class ChatGPTService {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class);
 
-            // Parse and extract the "content" field from the response JSON and convert the content to Vacaction object
-            String content = extractContent(response.getBody());
-            Vacation vacation = parseVacations(content);
-            /*
-            // Get the photos from Google api for each attraction
-            for (Vacation.DayOption dayOption : vacation.getDays()) {
-                List<Vacation.Attraction> attractions = dayOption.getAttractions();
-                List<Vacation.Attraction> enrichedAttractions = enrichAttractionsWithPhotos(attractions);
-                dayOption.setAttractions(enrichedAttractions);
-            }
+            // Try to parse the response and extract vacation details
+            String content = null;
+            Vacation vacation = new Vacation();  // Default empty vacation object
 
-             */
+            try {
+                content = extractContent(response.getBody());
+                vacation = parseVacations(content);
+
+                // Get the photos from Google API for each attraction
+                for (Vacation.DayOption dayOption : vacation.getDays()) {
+                    List<Vacation.Attraction> attractions = dayOption.getAttractions();
+                    List<Vacation.Attraction> enrichedAttractions = enrichAttractionsWithPhotos(attractions);
+                    dayOption.setAttractions(enrichedAttractions);
+                }
+            } catch (Exception e) {
+                logger.error("Error during Chat GPT response, we cant build vacation", e);
+                // Returning an empty vacation object in case of failure to parse content
+                vacation = new Vacation();  // Ensure empty vacation is returned
+            }
 
             return vacation;
 
@@ -115,7 +122,6 @@ public class ChatGPTService {
         return attractions;
     }
 }
-
 
 
 

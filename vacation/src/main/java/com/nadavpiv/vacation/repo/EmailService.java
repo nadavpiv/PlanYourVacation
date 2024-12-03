@@ -120,4 +120,3 @@ public class EmailService {
         return emailDaysAttractions;
     }
 }
-

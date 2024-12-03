@@ -71,6 +71,12 @@ public class VacationController {
             // Call ChatGPT service to get vacation option
             Vacation vacation = chatGPTService.getVacationOptions(vacationRequest);
 
+            if (vacation == null) {
+                // If vacation is empty, log it and exit the method
+                logger.info("No vacation options found, skipping further processing.");
+                return new ResponseEntity<>(null, HttpStatus.OK);
+            }
+
             // Check if the new vacation is a duplicate of the existing ones
             boolean isDuplicate = vacationService.isDuplicateVacation(vacation);
 
@@ -80,11 +86,9 @@ public class VacationController {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
 
-            System.out.println(vacation.getCity() + " " + vacation.getId());
+            logger.info("Vacation city: {}", vacation.getCity());
             // If the new vacation is not a duplicate, save the new vacation
             vacationService.saveVacation(vacation);
-
-            System.out.println(vacation.getCity() + " " + vacation.getId());
 
             // Step 4: Return the new vacation
             return new ResponseEntity<>(List.of(vacation), HttpStatus.CREATED);

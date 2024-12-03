@@ -39,7 +39,7 @@ public class ChatGPTPromptBuilder {
                         "- Restaurant name " +
                         "- Restaurant address " +
                         "- Restaurant price per person " +
-                        "- List of itinerary days: " +
+                        "- List of itinerary days: Generate a list of itinerary days where the number of days exactly equals the number of days of the vacation. For instance, if the vacation number of days is 4 days, the itinerary must include 4 distinct days with planned activities for each day " +
                         "- Day Number " +
                         "- list of attractions (minimum 3 attractions per day) " +
                         "- Attraction name " +
@@ -67,7 +67,7 @@ public class ChatGPTPromptBuilder {
                         "companyName: EL Al," +
                         "inboundFlight: String," +
                         "outboundFlight: String," +
-                        "flightPrice: 3500" +
+                        "flightPrice: int" +
                         "}," +
                         "hotel: {" +
                         "hotelName: String," +
@@ -174,5 +174,4 @@ public class ChatGPTPromptBuilder {
             return "";
     }
 }
-
 

@@ -15,6 +15,8 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Autowired
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
@@ -30,12 +32,22 @@ public class SecurityConfig {
                 .cors().configurationSource(corsConfigurationSource()) // CORS configuration
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login").permitAll() // Public endpoints
+                .antMatchers("/login", "/swagger-ui.html",
+                        "/api/vacations/swagger-ui.html",
+                        "/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/webjars/**",
+                        "/**/*.js", "/**/*.css", "/index.html").permitAll() // Public endpoints
                 .anyRequest().authenticated() // All other endpoints require authentication
                 .and()
                 .oauth2Login()
                 .loginPage("/login") // Custom login page (can be omitted for default OAuth login page)
-                .successHandler(oAuth2LoginSuccessHandler); // Custom OAuth login success handler
+                .successHandler(oAuth2LoginSuccessHandler) // Custom OAuth login success handler
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(customAuthenticationEntryPoint); // Use custom entry point for expired token
 
         return http.build();
     }
@@ -54,4 +66,3 @@ public class SecurityConfig {
         return urlBasedCorsConfigurationSource;
     }
 }
-
