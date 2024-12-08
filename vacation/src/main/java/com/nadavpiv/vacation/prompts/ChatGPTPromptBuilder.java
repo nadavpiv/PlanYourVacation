@@ -3,6 +3,7 @@ package com.nadavpiv.vacation.prompts;
 import com.nadavpiv.vacation.model.VacationRequest;
 
 public class ChatGPTPromptBuilder {
+    // This method builds a vacation prompt string for ChatGPT based on the user's vacation request.
     public static String buildVacationPrompt(VacationRequest request) {
         return String.format(
                 "Provide vacation option for the following criteria: " +
@@ -138,7 +139,9 @@ public class ChatGPTPromptBuilder {
         );
     }
 
+    // This method generates the city-specific part of the prompt.
     public static String getCityPrompt(VacationRequest request){
+        // Depending on whether the city is provided or needs to be a surprise, and whether the vacation is a road trip or not, build the city-related prompt.
         if(!request.getCity().equals("Surprise me") && request.getRoadTrip().equals("No"))
             return "City: %s" + " (the entire vacation should take place in this city. No travel to other cities is required) ";
         else if (!request.getCity().equals("Surprise me") && request.getRoadTrip().equals("Yes"))
@@ -152,6 +155,7 @@ public class ChatGPTPromptBuilder {
             return "%s";
     }
 
+    // This method generates the road trip-related part of the prompt.
     public static String getRoadTripPrompt(VacationRequest request){
         if(!request.getCity().equals("Surprise me") && request.getRoadTrip().equals("No"))
             return "Road Trip: %s" + " (all activities and accommodations should be in the specified city) ";
@@ -165,6 +169,8 @@ public class ChatGPTPromptBuilder {
         else
             return "%s";
     }
+
+    // This method generates the car transportation price prompt based on whether it's a road trip or not.
     public static String getCarTransportationPrice(VacationRequest request){
         if(request.getRoadTrip().equals("No"))
             return "Please calculate the total public transportation price for this vacation, including the cost of taxis, buses, and trains. Make sure to account for the number of passengers and the duration of the trip. ";
