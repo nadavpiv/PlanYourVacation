@@ -10,3 +10,9 @@ The app retrieves vacations from a **MongoDB** database that match the user's pr
 - Sends vacation details via email using **SendGrid API**.
 - Secure user authentication with **Google OAuth 2.0**.
 - Scalable deployment with **Docker**.
+
+## Technical Video
+You can view the technical video for this project on [YouTube](https://youtu.be/5VYpn-VjN2g).
+
+## Deployed Application
+The project is deployed and available at [Vacation Planner Application](https://vacation-planner-945157224681.me-west1.run.app/).
