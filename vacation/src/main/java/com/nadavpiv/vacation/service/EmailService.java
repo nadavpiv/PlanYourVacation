@@ -13,15 +13,17 @@ import java.io.IOException;
 public class EmailService {
 
     @Value("${sendgrid.api.key}")
-    private String sendGridApiKey;
+    private String sendGridApiKey; // The API key for SendGrid, to send emails.
     @Value("${sendgrid.valid.email}")
-    private String valid_email;
+    private String valid_email; // The sender's verified email address.
 
+    // Method to send an email with vacation details.
     public String sendEmail(String toEmail, String subject, Vacation vacation) {
-        Email from = new Email(valid_email); // Replace with your verified email
-        Email to = new Email(toEmail);
+        // Define the sender and recipient email addresses.
+        Email from = new Email(valid_email); // Sender email.
+        Email to = new Email(toEmail); // Recipient email.
 
-        // Create the HTML content with headers, bold text, and properly formatted restaurant details
+        // Build the email content with vacation details in HTML format.
         StringBuilder emailContent = new StringBuilder();
         emailContent.append("<html>")
                 .append("<body>")
@@ -33,26 +35,30 @@ public class EmailService {
                 .append("</body>")
                 .append("</html>");
 
-        Content content = new Content("text/html", emailContent.toString());  // Set content type to HTML
-        Mail mail = new Mail(from, subject, to, content);
+        Content content = new Content("text/html", emailContent.toString());  // Content of the email in HTML format.
+        Mail mail = new Mail(from, subject, to, content); // Create Mail object.
 
-        SendGrid sg = new SendGrid(sendGridApiKey);
-        Request request = new Request();
+        SendGrid sg = new SendGrid(sendGridApiKey); // Initialize SendGrid with the API key.
+        Request request = new Request(); // Request object for SendGrid API.
 
-        // Send the email
+        // Send the email using SendGrid API.
         try {
             request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
+            request.setEndpoint("mail/send"); // Set the endpoint for sending mail.
             request.setBody(mail.build());
-            Response response = sg.api(request);
+            Response response = sg.api(request); // Execute the request to send the email.
 
+            // Return status information of the email sent.
             return "Status Code: " + response.getStatusCode() +
                     ", Body: " + response.getBody() +
                     ", Headers: " + response.getHeaders();
         } catch (IOException ex) {
+            // Handle errors during email sending.
             return "Error sending email: " + ex.getMessage();
         }
     }
+
+    // Build the summary content for the vacation.
     private StringBuilder buildSummaryContent(Vacation vacation){
         StringBuilder emailSummary = new StringBuilder();
         emailSummary.append("<h1>Vacation Details</h1>")
@@ -64,6 +70,8 @@ public class EmailService {
                 .append("<p><strong>Price:</strong> ").append(vacation.getPrice()).append('$').append("</p>");
         return emailSummary;
     }
+
+    // Build the flight details section of the email.
     private StringBuilder buildFlightDetails(Vacation vacation){
         StringBuilder emailFlight = new StringBuilder();
         emailFlight.append("<h2>Flight Details</h2>")
@@ -73,6 +81,8 @@ public class EmailService {
                 .append("<p><strong>Flight Price:</strong> ").append(vacation.getFlight().getFlightPrice()).append('$').append("</p>");
         return emailFlight;
     }
+
+    // Build the hotel details section of the email.
     private StringBuilder buildHotelDetails(Vacation vacation){
         StringBuilder emailHotel = new StringBuilder();
         emailHotel.append("<h2>Hotel Details</h2>")
@@ -80,6 +90,8 @@ public class EmailService {
                 .append("<p><strong>Hotel Price:</strong> ").append(vacation.getHotel().getHotelPrice()).append('$').append("</p>");
         return emailHotel;
     }
+
+    // Build the restaurant details section of the email.
     private StringBuilder buildRestaurantDetails(Vacation vacation){
         StringBuilder emailRestaurant = new StringBuilder();
         emailRestaurant.append("<h2>Restaurant Details</h2>");
@@ -94,6 +106,8 @@ public class EmailService {
         }
         return emailRestaurant;
     }
+
+    // Build the itinerary and attractions details section of the email.
     private StringBuilder buildDaysAndAttractions(Vacation vacation){
         StringBuilder emailDaysAttractions = new StringBuilder();
         emailDaysAttractions.append("<h2>Itinerary</h2>");
