@@ -14,11 +14,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     private static final Logger logger = LoggerFactory.getLogger(CustomAuthenticationEntryPoint.class);
 
+    // This method is invoked when an unauthenticated user tries to access a protected resource.
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         logger.info("User arrived to our login page");
-        // Redirect to login page when token is expired or user is not authenticated
-        response.sendRedirect("/login");
+
+         // Redirect the user to the custom login page if they are unauthenticated or their session/token is expired.
+        response.sendRedirect("/login"); // Send a redirect response to the login page.
     }
 }
