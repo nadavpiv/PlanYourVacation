@@ -18,20 +18,25 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     private static final Logger logger = LoggerFactory.getLogger(OAuth2LoginSuccessHandler.class);
     @Value("${frontend.url}")
     private String frontendUrl;
+
+    // This method is called when the OAuth2 login is successful.
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        this.setAlwaysUseDefaultTargetUrl(true);
-        this.setDefaultTargetUrl(frontendUrl);
+        this.setAlwaysUseDefaultTargetUrl(true);  // Set this flag to always use the default target URL after successful login.
+        this.setDefaultTargetUrl(frontendUrl); // Set the default target URL to the frontend URL, which the user will be redirected to after successful login.
 
         if (authentication != null) {
-            Object principal = authentication.getPrincipal();
+            Object principal = authentication.getPrincipal(); // Get the principal (the authenticated user).
+
+             // If the principal is an OAuth2User (which it should be in the case of OAuth2 login).
             if (principal instanceof OAuth2User) {
-                OAuth2User oAuth2User = (OAuth2User) principal;
-                Map<String, Object> attributes = oAuth2User.getAttributes();
-                logger.info("Successful login email: {} ", (String) attributes.get("email"));
+                OAuth2User oAuth2User = (OAuth2User) principal; // Cast the principal to OAuth2User.
+                Map<String, Object> attributes = oAuth2User.getAttributes(); // Get the attributes of the authenticated user.
+                logger.info("Successful login email: {} ", (String) attributes.get("email")); // Log the email of the authenticated user.
             }
         }
 
+        // Call the parent class's onAuthenticationSuccess method to perform the default behavior.
         super.onAuthenticationSuccess(request, response, authentication);
 
     }
